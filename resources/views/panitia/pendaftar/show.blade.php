@@ -12,37 +12,82 @@
             </span>
         </div>
 
-        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h3 class="text-lg font-bold text-gray-800 border-b pb-3 mb-4">Biodata Pendaftar</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                    <p class="text-gray-500 mb-1">Nama Lengkap</p>
-                    <p class="font-bold text-gray-900">{{ $registration->student->nama_lengkap }}</p>
-                </div>
-                <div>
-                    <p class="text-gray-500 mb-1">NIK / NISN</p>
-                    <p class="font-bold text-gray-900">{{ $registration->student->nik }}</p>
-                </div>
-                <div>
-                    <p class="text-gray-500 mb-1">Asal Sekolah</p>
-                    <p class="font-bold text-gray-900">{{ $registration->student->sekolah_asal }}</p>
-                </div>
-                <div>
-                    <p class="text-gray-500 mb-1">Nilai Rata-Rata</p>
-                    <p class="font-bold text-gray-900">{{ $registration->student->nilai_rata_rata }}</p>
-                </div>
-                <div>
-                    <p class="text-gray-500 mb-1">Jalur Pilihan</p>
-                    <p class="font-bold text-gray-900">{{ $registration->jalur->nama ?? '-' }}</p>
-                </div>
-                <div>
-                    <p class="text-gray-500 mb-1">Status Saat Ini</p>
-                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full font-bold text-xs uppercase">
-                        {{ str_replace('_', ' ', $registration->status) }}
-                    </span>
-                </div>
-            </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
+    <h3 class="text-lg font-bold text-gray-800 border-b pb-4 mb-8">Biodata Pendaftar Lengkap</h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-8 text-sm">
+        
+        <div class="flex flex-col justify-start mb-4">
+            <p class="text-gray-400  text-[11px] font-bold uppercase tracking-widest">No. Pendaftaran</p>
+            <p class="font-bold text-gray-900 text-base tracking-wide">{{ $registration->nomor_pendaftaran ?? '-' }}</p>
         </div>
+        
+        <div class="flex flex-col justify-start mb-4">
+            <p class="text-gray-400 text-[11px] font-bold uppercase tracking-widest">Nama Lengkap</p>
+            <p class="font-bold text-gray-900 text-base">{{ $registration->student->nama_lengkap ?? '-' }}</p>
+        </div>
+
+        <div class="flex flex-col justify-start mb-4">
+            <p class="text-gray-400 text-[11px] font-bold uppercase tracking-widest">Jenis Kelamin</p>
+            <p class="font-bold text-gray-900 text-base">
+                {{ ($registration->student->jenis_kelamin ?? '-') === 'L' ? 'Laki-laki' : (($registration->student->jenis_kelamin ?? '-') === 'P' ? 'Perempuan' : $registration->student->jenis_kelamin ?? '-') }}
+            </p>
+        </div>
+        
+        <div class="flex flex-col justify-start mb-4">
+            <p class="text-gray-400 text-[11px] font-bold uppercase tracking-widest">NIK (Nomor Induk Kependudukan)</p>
+            <p class="font-bold text-gray-900 text-base tracking-wider">{{ $registration->student->nik ?? '-' }}</p>
+        </div>
+
+        <div class="flex flex-col justify-start mb-4">
+            <p class="text-gray-400 text-[11px] font-bold uppercase tracking-widest">Tempat, Tanggal Lahir</p>
+            <p class="font-bold text-gray-900 text-base">
+                {{ $registration->student->tempat_lahir ?? '-' }}, 
+                {{ isset($registration->student->tanggal_lahir) ? \Carbon\Carbon::parse($registration->student->tanggal_lahir)->format('d F Y') : '-' }}
+            </p>
+        </div>
+        
+        <div class="flex flex-col justify-start mb-4">
+            <p class="text-gray-400 text-[11px] font-bold uppercase tracking-widest">Agama</p>
+            <p class="font-bold text-gray-900 text-base">{{ $registration->student->agama ?? '-' }}</p>
+        </div>
+
+        <div class="flex flex-col justify-start mb-4">
+            <p class="text-gray-400 text-[11px] font-bold uppercase tracking-widest">No. HP / WhatsApp</p>
+            <p class="font-bold text-blue-600 font-mono text-base tracking-wide">{{ $registration->student->no_hp ?? '-' }}</p>
+        </div>
+        
+        <div class="flex flex-col justify-start mb-4">
+            <p class="text-gray-400 text-[11px] font-bold uppercase tracking-widest">Asal Sekolah</p>
+            <p class="font-bold text-gray-900 text-base uppercase">{{ $registration->student->sekolah_asal ?? '-' }}</p>
+        </div>
+
+        <div class="flex flex-col justify-start mb-4">
+            <p class="text-gray-400 text-[11px] font-bold uppercase tracking-widest">Jalur Pilihan</p>
+            <p class="font-extrabold text-blue-700 text-base">{{ $registration->jalur->nama ?? '-' }}</p>
+        </div>
+        
+        <div class="flex flex-col justify-start mb-4">
+            <p class="text-gray-400 text-[11px] font-bold uppercase tracking-widest">Nilai Rata-Rata Rapor</p>
+            <p class="font-bold text-gray-900 text-base">{{ $registration->student->nilai_rata_rata ?? '-' }}</p>
+        </div>
+
+        <div class="md:col-span-2 bg-gray-50 px-5 py-5 rounded-xl border border-gray-100 mt-4">
+            <p class="text-gray-400 mb-2.5 text-[11px] font-bold uppercase tracking-widest">Alamat Lengkap Sesuai KK</p>
+            <p class="font-bold text-gray-800 text-sm leading-relaxed tracking-wide uppercase">
+                {{ $registration->student->alamat ?? '-' }}
+            </p>
+        </div>
+
+        <div class="md:col-span-2 flex items-center justify-between border-t border-gray-100 pt-6 mt-4">
+            <p class="text-gray-600 font-bold text-sm tracking-wide">Status Pendaftaran Saat Ini:</p>
+            <span class="px-5 py-2.5 bg-yellow-50 text-yellow-800 rounded-lg font-black text-sm uppercase tracking-widest border border-yellow-200 shadow-sm">
+                {{ str_replace('_', ' ', $registration->status) }}
+            </span>
+        </div>
+
+    </div>
+</div>
 
         <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
             <h3 class="text-lg font-bold text-gray-800 border-b pb-3 mb-4">Pemeriksaan Dokumen Syarat</h3>

@@ -14,7 +14,7 @@
     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition mb-8">
             <h3 class="text-blue-600 text-4xl font-bold mb-2">{{ $total }}</h3>
             <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Total Pendaftar</p>
-        </div>
+    </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition">
@@ -44,19 +44,19 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
-                        <th class="p-4 font-medium">No. Pendaftaran</th>
-                        <th class="p-4 font-medium">Nama</th>
-                        <th class="p-4 font-medium">Jalur</th>
-                        <th class="p-4 font-medium">Status</th>
+                        <th class="p-4 text-center font-medium">No. Pendaftaran</th>
+                        <th class="p-4 text-center font-medium">Nama</th>
+                        <th class="p-4 text-center font-medium">Jalur</th>
+                        <th class="p-4 text-center font-medium">Status</th>
                     </tr>
                 </thead>
                 <tbody class="text-sm text-gray-700">
                     @forelse($terbaru as $reg)
                     <tr class="border-b border-gray-50 hover:bg-gray-50">
-                        <td class="p-4 font-bold text-gray-900">{{ $reg->nomor_pendaftaran }}</td>
-                        <td class="p-4">{{ $reg->student->nama_lengkap }}</td>
-                        <td class="p-4">{{ $reg->jalur->nama ?? '-' }}</td>
-                        <td class="p-4">
+                        <td class="p-4 text-center font-bold text-gray-900">{{ $reg->nomor_pendaftaran }}</td>
+                        <td class="p-4 text-center">{{ $reg->student->nama_lengkap }}</td>
+                        <td class="p-4 text-center">{{ $reg->jalur->nama ?? '-' }}</td>
+                        <td class="p-4 text-center">
                             @if($reg->status === 'menunggu_verifikasi')
                                 <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-md font-semibold text-xs">Menunggu</span>
                             @elseif($reg->status === 'terverifikasi')

@@ -140,8 +140,7 @@
 
                                     <td class="p-3 text-center align-top">
                                     @if($doc->status_verifikasi === 'ditolak')
-                                        <form action="#"
-                                        {{-- "{{ route('siswa.dokumen.reupload', $doc->id) }}"  --}}
+                                        <form action="{{ route('student.dokumen.reupload', $doc->id) }}" 
                                         method="POST" enctype="multipart/form-data" 
                                             class="flex flex-col  gap-2">
                                             @csrf

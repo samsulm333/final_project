@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Cloudinary\Cloudinary;
 use Barryvdh\DomPDF\Facade\Pdf;
+// use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 
 
@@ -130,6 +131,7 @@ class RegistrationController extends Controller
                         'folder' => 'ppdb_dokumen/' . $nomor_pendaftaran
                     ]);
 
+
                     // 3. Simpan ke Database
                     \App\Models\Document::create([
                         'registration_id' => $registration->id,
@@ -151,80 +153,6 @@ class RegistrationController extends Controller
         }
     }
 
-    // public function store(Request $request)
-    // {
-    //     // 1. Validasi Data Diri & Akademik (Sesuaikan dengan aturan Anda)
-    //     $request->validate([
-    //         'nik' => 'required|numeric',
-    //         'sekolah_asal' => 'required|string',
-    //         'nilai_rata_rata' => 'required|numeric|min:0|max:100',
-    //         'jalur_id' => 'required|exists:jalur_pendaftarans,id',
-    //         'dokumen_foto' => 'required|file|mimes:jpg,jpeg,png|max:2048',
-    //         'dokumen_kk' => 'required|file|mimes:pdf,jpg,jpeg|max:5120',
-    //         'dokumen_ijazah' => 'required|file|mimes:pdf,jpg,jpeg|max:5120',
-    //         'dokumen_rapor' => 'required|file|mimes:pdf,jpg,jpeg|max:5120',
-    //         'dokumen_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg|max:5120',
-    //     ]);
-
-    //     \Illuminate\Support\Facades\DB::beginTransaction();
-
-    //     try {
-    //         // 2. Pembaruan Data Profil Student (Siswa)
-    //         $student = \App\Models\Student::where('user_id', auth()->id())->first();
-    //         $student->update([
-    //             'nik' => $request->nik,
-    //             'sekolah_asal' => $request->sekolah_asal,
-    //             'nilai_rata_rata' => $request->nilai_rata_rata,
-    //             // Tambahkan kolom lain seperti nama_ayah, jenis_kelamin, dll di sini
-    //         ]);
-
-    //         // 3. Penciptaan Baris Registrasi (Pendaftaran)
-    //         $registration = \App\Models\Registration::create([
-    //             'student_id' => $student->id,
-    //             'jalur_id' => $request->jalur_id,
-    //             'nomor_pendaftaran' => 'PPDB-' . date('Y') . '-' . str_pad($student->id, 4, '0', STR_PAD_LEFT),
-    //             'status' => 'menunggu_verifikasi',
-    //         ]);
-
-    //         // 4. ALGORITMA PENYISIPAN DOKUMEN (Solusi dari Error Anda)
-    //         // Kita petakan nama input HTML dengan nama resmi dokumennya
-    //         $berkasDaftar = [
-    //             'dokumen_foto' => 'Pas Foto 3x4',
-    //             'dokumen_kk' => 'Kartu Keluarga',
-    //             'dokumen_ijazah' => 'Ijazah / SKL',
-    //             'dokumen_rapor' => 'Rapor Semester Terakhir',
-    //             'dokumen_prestasi' => 'Piagam Prestasi',
-    //         ];
-
-    //         foreach ($berkasDaftar as $inputName => $namaResmi) {
-    //             if ($request->hasFile($inputName)) {
-    //                 $file = $request->file($inputName);
-                    
-    //                 // Asumsi integrasi Cloudinary (Sesuaikan sintaks jika Anda menggunakan package berbeda)
-    //                 $uploadedFileUrl = cloudinary()->upload($file->getRealPath())->getSecurePath();
-
-    //                 // Insert data sebagai BARIS BARU untuk setiap file
-    //                 \App\Models\Document::create([
-    //                     'registration_id' => $registration->id,
-    //                     'nama_dokumen' => $namaResmi,
-    //                     'file_path' => $uploadedFileUrl,
-    //                     'status' => 'menunggu_verifikasi'
-    //                 ]);
-    //             }
-    //         }
-
-    //         \Illuminate\Support\Facades\DB::commit();
-
-    //         // 5. Lempar kembali ke Dasbor dengan Notifikasi Global yang sudah kita buat
-    //         return redirect()->route('student.dashboard')->with('success', 'Pendaftaran berhasil dikirim dan dokumen telah diunggah ke Cloudinary.');
-
-    //     } catch (\Exception $e) {
-    //         \Illuminate\Support\Facades\DB::rollBack();
-    //         // Lempar error jika Cloudinary atau Database gagal
-    //         return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
-    //     }
-    // }
-
     public function cetakBukti()
     {
         // Tarik data pendaftaran milik siswa yang sedang login
@@ -238,4 +166,58 @@ class RegistrationController extends Controller
         // Perintah paksa browser untuk mengunduh file
         return $pdf->download('Bukti_Pendaftaran_' . $registration->nomor_pendaftaran . '.pdf');
     }
+
+    // Fungsi reupload  dokumen yang ditolak panitia
+    public function reupload(Request $request, $id)
+    {
+        // 1. Validasi File
+        $request->validate([
+            'file_dokumen' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ], [
+            'file_dokumen.required' => 'Anda wajib memilih file sebelum mengunggah.',
+            'file_dokumen.mimes' => 'Format file harus berupa PDF, JPG, atau PNG.',
+            'file_dokumen.max' => 'Ukuran file tidak boleh lebih dari 2MB.'
+        ]);
+
+        // 2. Cari dokumen berdasarkan ID. Gunakan namespace penuh untuk mencegah error import.
+        $document = \App\Models\Document::findOrFail($id);
+
+      
+      // 3. Proses Unggah File ke Cloudinary
+      // 3. Proses Unggah File ke Cloudinary
+        if ($request->hasFile('file_dokumen')) {
+            $file = $request->file('file_dokumen');
+            
+            // Inisialisasi Manual
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => 'dho5z7yoe',
+                    'api_key'    => '784976385429723',
+                    'api_secret' => '4njy5KNDt10GAPx0RymVXfJriUw',
+                ],
+            ]);
+
+            // Lakukan upload
+            $uploadResult = $cloudinary->uploadApi()->upload($file->getRealPath());
+
+            // FIX: Ambil 'secure_url' saja dari hasil upload (Array key)
+            // Jangan simpan seluruh $uploadResult ke database
+            $document->cloudinary_url = $uploadResult['secure_url'];
+        }
+
+        // 4. Reset Status (Mutlak Diperlukan)
+        $document->status_verifikasi = 'menunggu';
+        $document->catatan = null;
+        $document->save();
+
+        // 5. Sinkronisasi status pendaftaran utama menjadi menunggu verifikasi ulang
+        if ($document->registration) {
+            $document->registration->update([
+                'status' => 'menunggu_verifikasi'
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Dokumen berhasil diperbarui dan masuk antrean verifikasi ulang.');
+    }
+
 }

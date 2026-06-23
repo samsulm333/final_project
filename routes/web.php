@@ -29,6 +29,8 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('student.')->gr
 
     // Rute Cetak Bukti PDF
     Route::get('/cetak-bukti', [\App\Http\Controllers\Student\RegistrationController::class, 'cetakBukti'])->name('cetak_bukti');
+
+    Route::patch('/dokumen/{id}/reupload', [RegistrationController::class, 'reupload'])->name('dokumen.reupload');
 });
 
 
