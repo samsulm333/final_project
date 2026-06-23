@@ -60,35 +60,57 @@
                     <tbody>
                         @forelse($registration->documents ?? [] as $doc)
                         <tr class="border-b border-gray-100">
-                            <td class="p-3 font-medium text-gray-800">{{ $doc->nama_dokumen }}</td>
+                            <td class="p-3 font-medium text-gray-800">{{ $doc->jenis_dokumen }}</td>
                             <td class="p-3 text-center">
-                                <a href="{{ $doc->file_path }}" target="_blank" class="text-blue-600 hover:text-blue-800 underline text-sm font-semibold">
+                                <a href="{{ $doc->cloudinary_url }}" target="_blank" class="text-blue-600 hover:text-blue-800 underline text-sm font-semibold">
                                     Lihat File
                                 </a>
                             </td>
                             <td class="p-3 text-center">
-                                @if($doc->status === 'disetujui')
+                                @if($doc->status_verifikasi === 'disetujui')
                                     <span class="text-green-600 font-bold text-sm">&#10004; Valid</span>
-                                @elseif($doc->status === 'ditolak')
+                                @elseif($doc->status_verifikasi === 'ditolak')
                                     <span class="text-red-600 font-bold text-sm">&#10006; Ditolak</span>
                                 @else
                                     <span class="text-yellow-600 font-bold text-sm">Menunggu</span>
                                 @endif
                             </td>
                             <td class="p-3 flex justify-center gap-2">
+                            <form action="{{ route('panitia.dokumen.verify', $doc->id) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status_verifikasi" value="disetujui">
+                                <button type="submit" class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded shadow transition">Setujui</button>
+                            </form>
+
+                            <button type="button" 
+                                    onclick="document.getElementById('modalTolak-{{ $doc->id }}').showModal()" 
+                                    class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded shadow transition">
+                                Tolak
+                            </button>
+
+                            <dialog id="modalTolak-{{ $doc->id }}" class="p-6 rounded-xl shadow-xl border border-gray-200 w-96 backdrop:bg-gray-800 backdrop:bg-opacity-50">
                                 <form action="{{ route('panitia.dokumen.verify', $doc->id) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
-                                    <input type="hidden" name="status" value="disetujui">
-                                    <button type="submit" class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded shadow transition">Setujui</button>
+                                    <input type="hidden" name="status_verifikasi" value="ditolak">
+                                    
+                                    <h3 class="font-bold text-gray-800 mb-4">Catatan Penolakan</h3>
+                                    <p class="text-xs text-gray-500 mb-2">Mengapa berkas ini ditolak?</p>
+                                    
+                                    <textarea name="catatan" rows="4" required 
+                                        class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm p-2 mb-4"
+                                        placeholder="Contoh: Dokumen kurang jelas..."></textarea>
+                                    
+                                    <div class="flex justify-end gap-2">
+                                        <button type="button" onclick="document.getElementById('modalTolak-{{ $doc->id }}').close()" 
+                                            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300">Batal</button>
+                                        <button type="submit" 
+                                            class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700">Kirim Penolakan</button>
+                                    </div>
                                 </form>
-                                <form action="{{ route('panitia.dokumen.verify', $doc->id) }}" method="POST">
-                                    @csrf
-                                    @method('PATCH')
-                                    <input type="hidden" name="status" value="ditolak">
-                                    <button type="submit" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded shadow transition">Tolak</button>
-                                </form>
-                            </td>
+                            </dialog>
+                        </td>
                         </tr>
                         @empty
                         <tr>

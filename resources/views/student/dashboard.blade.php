@@ -99,32 +99,74 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
-                                    <th class="p-3 font-medium">Jenis Dokumen</th>
+                                    <th class="p-3 font-medium text-center">Jenis Dokumen</th>
                                     <th class="p-3 font-medium text-center">File Validasi</th>
-                                    <th class="p-3 font-medium">Status</th>
+                                    <th class="p-3 font-medium text-center">Status</th>
+                                    <th class="p-3 font-medium text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="text-sm text-gray-700">
                                 @forelse($documents as $doc)
                                 <tr class="border-b border-gray-100 hover:bg-gray-50">
-                                    <td class="p-3 font-semibold text-gray-800 uppercase">{{ $doc->jenis_dokumen }}</td>
+                                    <td class="p-3 font-semibold text-gray-800 uppercase text-center">{{ $doc->jenis_dokumen }}</td>
                                     <td class="p-3 text-center">
                                         <a href="{{ $doc->cloudinary_url }}" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold underline text-xs">
                                             Lihat File
                                         </a>
                                     </td>
-                                    <td class="p-3">
-                                        @if($doc->status_verifikasi === 'menunggu')
-                                            <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-bold uppercase">Menunggu</span>
-                                        @elseif($doc->status_verifikasi === 'disetujui' || $doc->status_verifikasi === 'valid')
-                                            <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold uppercase">&#10004; Disetujui</span>
+                               
+                                    <td class="p-3 text-center align-top min-w-[140px] max-w-[160px]">
+                                        @if($doc->status_verifikasi === 'disetujui' || $doc->status_verifikasi === 'valid')
+                                            <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold uppercase whitespace-nowrap">
+                                                &#10004; Disetujui
+                                            </span>
                                         @elseif($doc->status_verifikasi === 'ditolak')
-                                            <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-bold uppercase">&#10006; Ditolak</span>
-                                            @if($doc->catatan)
-                                                <p class="text-[10px] text-red-600 mt-1">Catatan: {{ $doc->catatan }}</p>
-                                            @endif
+                                            <div class="flex flex-col items-center gap-1 text-center">
+                                                <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-bold uppercase whitespace-nowrap">
+                                                    &#10006; Ditolak
+                                                </span>
+                                                @if($doc->catatan)
+                                                    <p class="text-[10px] text-red-600 mt-1 leading-tight whitespace-normal break-words">
+                                                        Catatan: {{ $doc->catatan }}
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        @elseif($doc->status_verifikasi === 'menunggu')
+                                            <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-bold uppercase whitespace-nowrap">
+                                                Menunggu
+                                            </span>
                                         @endif
                                     </td>
+
+                                    <td class="p-3 text-center align-top">
+                                    @if($doc->status_verifikasi === 'ditolak')
+                                        <form action="#"
+                                        {{-- "{{ route('siswa.dokumen.reupload', $doc->id) }}"  --}}
+                                        method="POST" enctype="multipart/form-data" 
+                                            class="flex flex-col  gap-2">
+                                            @csrf
+                                            @method('PATCH')
+                                            
+                                            <input type="file" name="file_dokumen" required accept=".pdf,.jpg,.jpeg,.png" 
+                                                class="block text-[10px] text-gray-500 max-w-[180px]
+                                                        file:mr-2 file:py-0.5 file:px-2 file:rounded file:border-0 
+                                                        file:text-[10px] file:font-semibold file:bg-blue-50 
+                                                        file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+
+                                            <button type="submit" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold rounded shadow transition whitespace-nowrap">
+                                                Upload Ulang
+                                            </button>
+                                        </form>
+                                    @elseif($doc->status_verifikasi === 'disetujui')
+                                        <span class="text-xs text-green-600 font-semibold italic flex items-center justify-center gap-1">
+                                            &#10003; Dokumen Aman
+                                        </span>
+                                    @else
+                                        <span class="text-xs text-gray-400 italic">
+                                            Tidak Ada Aksi
+                                        </span>
+                                    @endif
+                                </td>
                                 </tr>
                                 @empty
                                 <tr>
