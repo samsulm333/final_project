@@ -7,25 +7,31 @@
         $baru = \App\Models\Registration::whereDate('created_at', \Carbon\Carbon::today())->count();
         $menunggu = \App\Models\Registration::where('status', 'menunggu_verifikasi')->count();
         $terverifikasi = \App\Models\Registration::where('status', 'terverifikasi')->count();
+        $ditolak = \App\Models\Document::where('status_verifikasi', 'ditolak')->count();
         $terbaru = \App\Models\Registration::with(['student', 'jalur'])->latest()->take(5)->get();
     @endphp
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition">
+    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition mb-8">
             <h3 class="text-blue-600 text-4xl font-bold mb-2">{{ $total }}</h3>
             <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Total Pendaftar</p>
         </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition">
             <h3 class="text-purple-600 text-4xl font-bold mb-2">{{ $baru }}</h3>
-            <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Baru Hari Ini</p>
+            <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Total Pendaftar Baru Hari Ini</p>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition">
             <h3 class="text-yellow-500 text-4xl font-bold mb-2">{{ $menunggu }}</h3>
-            <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Menunggu Verifikasi</p>
+            <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Total Menunggu Verifikasi</p>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition">
             <h3 class="text-green-500 text-4xl font-bold mb-2">{{ $terverifikasi }}</h3>
-            <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Terverifikasi</p>
+            <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Total Terverifikasi</p>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition">
+            <h3 class="text-green-500 text-4xl font-bold mb-2">{{ $ditolak }}</h3>
+            <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Total Dokumen Ditolak</p>
         </div>
     </div>
 
