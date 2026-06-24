@@ -19,7 +19,7 @@
     <div class="max-w-5xl mx-auto space-y-6">
         
         <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h3 class="text-xl font-bold text-gray-800 mb-1">Halo, {{ Auth::user()->name }} &#128075;</h3>
+            <h3 class="text-xl font-bold text-gray-800 mb-1">Halo, {{ Auth::user()->name }} </h3>
             <p class="text-gray-500 text-sm">Selamat datang di Dashboard PPDB Online.</p>
         </div>
 
@@ -118,12 +118,12 @@
                                     <td class="p-3 text-center align-top min-w-[140px] max-w-[160px]">
                                         @if($doc->status_verifikasi === 'disetujui' || $doc->status_verifikasi === 'valid')
                                             <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold uppercase whitespace-nowrap">
-                                                &#10004; Disetujui
+                                                 Disetujui
                                             </span>
                                         @elseif($doc->status_verifikasi === 'ditolak')
                                             <div class="flex flex-col items-center gap-1 text-center">
                                                 <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-bold uppercase whitespace-nowrap">
-                                                    &#10006; Ditolak
+                                                     Ditolak
                                                 </span>
                                                 @if($doc->catatan)
                                                     <p class="text-[10px] text-red-600 mt-1 leading-tight whitespace-normal break-words">

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Student\RegistrationController;
@@ -10,6 +11,8 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// Rute beranda yang menangani form pencarian
+Route::get('/', [WelcomeController::class, 'index'])->name('beranda');
 
 
 // Grup Rute Siswa
