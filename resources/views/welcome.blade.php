@@ -38,6 +38,27 @@
         </div>
     </header>
 
+    @if($pengumuman->count() > 0)
+    <section class="max-w-6xl mx-auto px-4 -mt-8 relative z-20 mb-12">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="bg-red-600 text-white px-6 py-3 font-bold text-sm uppercase tracking-widest flex items-center gap-2">
+                <span>📢</span> Papan Informasi Resmi
+            </div>
+            <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                @foreach($pengumuman as $info)
+                    <div class="border-l-4 border-blue-500 pl-4 py-1">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                            {{ $info->created_at->format('d M Y') }}
+                        </span>
+                        <h4 class="font-bold text-gray-900 leading-tight mb-2">{{ $info->judul }}</h4>
+                        <p class="text-sm text-gray-600 line-clamp-3">{{ $info->konten }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
     <section id="jadwal" class="py-20 max-w-6xl mx-auto px-4">
         <div class="text-center mb-12">
             <h2 class="text-3xl font-bold text-gray-800">Jadwal & Tahapan Seleksi</h2>

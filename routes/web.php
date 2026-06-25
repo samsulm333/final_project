@@ -7,6 +7,12 @@ use App\Http\Controllers\Student\RegistrationController;
 use App\Http\Controllers\Panitia\VerificationController;
 use App\Http\Controllers\Admin\JalurController;
 
+
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\PanitiaController;
+use App\Http\Controllers\Admin\AnnouncementController;
+
+
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
@@ -53,8 +59,8 @@ Route::middleware(['auth', 'role:panitia'])->prefix('panitia')->name('panitia.')
     // Manajemen Verifikasi (Tabel & Detail UI)
     Route::get('/pendaftar', [VerificationController::class, 'index'])->name('pendaftar.index');
 
-    // Rute Ekspor Laporan CSV
-    Route::get('/export-pendaftar', [\App\Http\Controllers\Panitia\VerificationController::class, 'exportCsv'])->name('pendaftar.export');
+    // Rute Ekspor Laporan Excel
+    Route::get('/export-pendaftar', [\App\Http\Controllers\Panitia\VerificationController::class, 'exportExcel'])->name('pendaftar.export');
 
 
     Route::get('/pendaftar/{registration}', [VerificationController::class, 'show'])->name('pendaftar.show');
@@ -65,29 +71,54 @@ Route::middleware(['auth', 'role:panitia'])->prefix('panitia')->name('panitia.')
 });
 
 // Grup Rute Admin
+// Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    
+//     // Dasbor Utama Admin
+//     Route::get('/dashboard', function () {
+//         // Mengambil statistik global untuk admin
+//         $totalSiswa = \App\Models\Student::count();
+//         $totalJalur = \App\Models\JalurPendaftaran::count();
+//         return view('admin.dashboard', compact('totalSiswa', 'totalJalur'));
+//     })->name('dashboard');
+
+
+//     // Rute Eksekusi Seleksi Otomatis
+//     Route::post('/jalankan-seleksi', [\App\Http\Controllers\Admin\JalurController::class, 'jalankanSeleksi'])->name('seleksi.otomatis');
+
+//     // Rute Buka/Tutup Pengumuman per Jalur
+//     Route::patch('/jalur/{jalur}/toggle-pengumuman', [\App\Http\Controllers\Admin\JalurController::class, 'togglePengumuman'])->name('jalur.toggle_pengumuman');
+
+    
+//     // Manajemen Master Data: Jalur Pendaftaran
+//     Route::resource('jalur', JalurController::class)->except(['show']);
+
+    
+
+// });
+
+// Grup Rute Admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     
-    // Dasbor Utama Admin
-    Route::get('/dashboard', function () {
-        // Mengambil statistik global untuk admin
-        $totalSiswa = \App\Models\Student::count();
-        $totalJalur = \App\Models\JalurPendaftaran::count();
-        return view('admin.dashboard', compact('totalSiswa', 'totalJalur'));
-    })->name('dashboard');
+    // 1. Dasbor Utama Admin (Dipindah ke Controller agar mampu memproses data statistik yang kompleks)
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
+    // 2. Sistem Proses Seleksi Otomatis (Menggunakan fitur Preview sebelum Publish)
+    Route::get('/seleksi', [AdminController::class, 'selectionIndex'])->name('seleksi.index');
+    Route::post('/seleksi/preview', [AdminController::class, 'runSelectionPreview'])->name('seleksi.preview');
+    Route::post('/seleksi/publish', [AdminController::class, 'publishResults'])->name('seleksi.publish');
 
-    // Rute Eksekusi Seleksi Otomatis
-    Route::post('/jalankan-seleksi', [\App\Http\Controllers\Admin\JalurController::class, 'jalankanSeleksi'])->name('seleksi.otomatis');
+    // 3. Ekspor Laporan Siswa Diterima
+    Route::get('/laporan/ekspor', [AdminController::class, 'exportExcel'])->name('laporan.export');
 
-    // Rute Buka/Tutup Pengumuman per Jalur
-    Route::patch('/jalur/{jalur}/toggle-pengumuman', [\App\Http\Controllers\Admin\JalurController::class, 'togglePengumuman'])->name('jalur.toggle_pengumuman');
-
-    
-    // Manajemen Master Data: Jalur Pendaftaran
+    // 4. Manajemen Master Data: Jalur Pendaftaran (Rute Asli Anda Dipertahankan)
     Route::resource('jalur', JalurController::class)->except(['show']);
+    Route::patch('/jalur/{jalur}/toggle-pengumuman', [JalurController::class, 'togglePengumuman'])->name('jalur.toggle_pengumuman');
 
-    
+    // 5. Manajemen Akun Panitia
+    Route::resource('panitia', PanitiaController::class)->except(['show']);
 
+    // 6. Manajemen Pengumuman Homepage
+    Route::resource('pengumuman', AnnouncementController::class)->except(['show']);
 });
 
 // Rute Profil Bawaan Breeze (Bisa diakses oleh semua role yang sudah login)

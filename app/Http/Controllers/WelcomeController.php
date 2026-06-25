@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Registration;
+use App\Models\Announcement;
 use Illuminate\Support\Str;
 
 class WelcomeController extends Controller
@@ -13,9 +14,13 @@ class WelcomeController extends Controller
         $hasil_pencarian = null;
         $pesan_error = null;
 
-        // Jika ada request pencarian dari form Cek Status
+        // Tarik data pengumuman yang di-publish (maksimal 3 terbaru)
+        $pengumuman = Announcement::where('is_published', true)
+                                  ->orderBy('created_at', 'desc')
+                                  ->take(3)
+                                  ->get();
+
         if ($request->has('nomor_pendaftaran') && $request->nomor_pendaftaran != '') {
-            
             $hasil_pencarian = Registration::with(['student', 'jalur'])
                 ->where('nomor_pendaftaran', $request->nomor_pendaftaran)
                 ->first();
@@ -25,7 +30,8 @@ class WelcomeController extends Controller
             }
         }
 
-        return view('welcome', compact('hasil_pencarian', 'pesan_error'));
+       
+        return view('welcome', compact('hasil_pencarian', 'pesan_error', 'pengumuman'));
     }
 
     // Fungsi bantuan untuk menyamarkan nama (Budi Santoso -> Bu** S******)

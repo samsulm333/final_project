@@ -64,7 +64,7 @@ class VerificationController extends Controller
         return redirect()->back()->with('success', 'Status verifikasi dokumen berhasil disimpan.');
     }
 
-    public function exportCsv()
+    public function exportExcel()
     {
         $fileName = 'rekap_pendaftar_ppdb_' . date('Ymd_His') . '.xlsx';
         return Excel::download(new PendaftarExport, $fileName);
