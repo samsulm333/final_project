@@ -1,8 +1,6 @@
 <x-panel-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dasbor Super Admin PPDB') }}
-        </h2>
+    <x-slot name="title">
+       Dashboard Super Admin PPDB
     </x-slot>
 
     <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">

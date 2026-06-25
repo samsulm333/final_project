@@ -23,9 +23,12 @@
                     </div>
                     <p class="text-xs text-amber-600 mb-6 font-medium">Status kelulusan siswa sudah paten dan tidak dapat diubah lagi melalui antarmuka ini.</p>
                     
-                    <button disabled class="w-full md:w-2/3 mx-auto py-4 bg-gray-200 text-gray-400 font-bold rounded-xl text-sm tracking-widest uppercase cursor-not-allowed">
-                        Sistem Terkunci
-                    </button>
+                    <form action="{{ route('admin.seleksi.reset') }}" method="POST" onsubmit="return confirm('PERINGATAN BAHAYA!\n\nApakah Anda yakin ingin membatalkan semua hasil seleksi?\nStatus kelulusan seluruh siswa akan ditarik kembali dan mereka tidak akan bisa melihat hasil pengumuman sampai Anda memublikasikannya ulang.');">
+                        @csrf
+                        <button type="submit" class="w-full md:w-2/3 mx-auto py-4 bg-white border-2 border-red-500 text-red-600 hover:bg-red-50 font-extrabold rounded-xl text-sm tracking-widest uppercase shadow-sm transition transform hover:-translate-y-1">
+                            🔓 Buka Kunci & Tarik Hasil Kelulusan
+                        </button>
+                    </form>
                 @else
                     <form action="{{ route('admin.seleksi.preview') }}" method="POST">
                         @csrf

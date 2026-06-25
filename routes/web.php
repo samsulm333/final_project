@@ -6,10 +6,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Student\RegistrationController;
 use App\Http\Controllers\Panitia\VerificationController;
 use App\Http\Controllers\Admin\JalurController;
-
+use App\Http\Controllers\Admin\PanitiaController;
 
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\PanitiaController;
+
 use App\Http\Controllers\Admin\AnnouncementController;
 
 
@@ -70,31 +70,6 @@ Route::middleware(['auth', 'role:panitia'])->prefix('panitia')->name('panitia.')
     
 });
 
-// Grup Rute Admin
-// Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    
-//     // Dasbor Utama Admin
-//     Route::get('/dashboard', function () {
-//         // Mengambil statistik global untuk admin
-//         $totalSiswa = \App\Models\Student::count();
-//         $totalJalur = \App\Models\JalurPendaftaran::count();
-//         return view('admin.dashboard', compact('totalSiswa', 'totalJalur'));
-//     })->name('dashboard');
-
-
-//     // Rute Eksekusi Seleksi Otomatis
-//     Route::post('/jalankan-seleksi', [\App\Http\Controllers\Admin\JalurController::class, 'jalankanSeleksi'])->name('seleksi.otomatis');
-
-//     // Rute Buka/Tutup Pengumuman per Jalur
-//     Route::patch('/jalur/{jalur}/toggle-pengumuman', [\App\Http\Controllers\Admin\JalurController::class, 'togglePengumuman'])->name('jalur.toggle_pengumuman');
-
-    
-//     // Manajemen Master Data: Jalur Pendaftaran
-//     Route::resource('jalur', JalurController::class)->except(['show']);
-
-    
-
-// });
 
 // Grup Rute Admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -106,6 +81,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/seleksi', [AdminController::class, 'selectionIndex'])->name('seleksi.index');
     Route::post('/seleksi/preview', [AdminController::class, 'runSelectionPreview'])->name('seleksi.preview');
     Route::post('/seleksi/publish', [AdminController::class, 'publishResults'])->name('seleksi.publish');
+
+    // Tambahkan baris ini untuk fitur Buka Kunci
+    Route::post('/seleksi/reset', [AdminController::class, 'resetSelection'])->name('seleksi.reset');
 
     // 3. Ekspor Laporan Siswa Diterima
     Route::get('/laporan/ekspor', [AdminController::class, 'exportExcel'])->name('laporan.export');

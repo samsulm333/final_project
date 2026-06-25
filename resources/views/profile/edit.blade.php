@@ -1,15 +1,33 @@
 <x-panel-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
+    <x-slot name="title">
+        Profile
     </x-slot>
 
-    <div class="mb-6 flex items-center justify-between">
-    <a href="{{ route('student.dashboard') }}" class="text-sm text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-2 transition duration-150 ease-in-out">
-        &larr; Kembali ke Dashboard Berkas
-    </a>
-</div>
+
+     @if(Auth::user()->role === 'student')
+        <div class="mb-6 flex items-center justify-between">
+            <a href="{{ route('student.dashboard') }}" class="text-sm text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-2 transition duration-150 ease-in-out">
+                &larr; Kembali ke Dashboard Berkas
+            </a>
+        </div>
+     @endif
+
+     @if(Auth::user()->role === 'panitia')
+        <div class="mb-6 flex items-center justify-between">
+            <a href="{{ route('panitia.dashboard') }}" class="text-sm text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-2 transition duration-150 ease-in-out">
+                &larr; Kembali ke Dashboard Berkas
+            </a>
+        </div>
+     @endif
+
+      @if(Auth::user()->role === 'admin')
+        <div class="mb-6 flex items-center justify-between">
+            <a href="{{ route('panitia.dashboard') }}" class="text-sm text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-2 transition duration-150 ease-in-out">
+                &larr; Kembali ke Dashboard Berkas
+            </a>
+        </div>
+     @endif
+
 
     <div class="py-12">
         

@@ -99,6 +99,26 @@ class AdminController extends Controller
         }
     }
 
+    
+    // Membuka kunci / membatalkan hasil seleksi
+    public function resetSelection()
+    {
+        DB::beginTransaction();
+        try {
+            // Tarik mundur semua siswa yang sudah terlanjur diseleksi
+            // Kembalikan statusnya ke 'terverifikasi' (masuk kembali ke radar antrean seleksi)
+            \App\Models\Registration::whereIn('status', ['diterima', 'tidak_diterima'])
+                        ->update(['status' => 'terverifikasi']);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Kunci seleksi berhasil dibuka! Seluruh status kelulusan telah ditarik ulang, Anda dapat menjalankan mesin seleksi kembali.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat membuka kunci: ' . $e->getMessage());
+        }
+    }
+
     // 5. Ekspor Laporan Excel Instan
     public function exportExcel()
     {

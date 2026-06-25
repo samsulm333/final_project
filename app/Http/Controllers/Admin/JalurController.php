@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JalurPendaftaran;
 use Illuminate\Http\Request;
 
+
 class JalurController extends Controller
 {
     public function index()
@@ -57,37 +58,6 @@ class JalurController extends Controller
 
         $jalur->delete();
         return redirect()->route('admin.jalur.index')->with('success', 'Jalur pendaftaran berhasil dihapus.');
-    }
-
-    public function jalankanSeleksi()
-    {
-        $semuaJalur = JalurPendaftaran::all();
-
-        foreach ($semuaJalur as $jalur) {
-            // 1. Tarik semua siswa TERVERIFIKASI di jalur ini
-            $pendaftar = \App\Models\Registration::where('jalur_id', $jalur->id)
-                ->where('status', 'terverifikasi')
-                ->with('student')
-                ->get()
-                // 2. Urutkan berdasarkan nilai rata-rata tertinggi ke terendah
-                ->sortByDesc(function ($reg) {
-                    return $reg->student->nilai_rata_rata;
-                });
-
-            // 3. Potong data berdasarkan Kuota Jalur
-            $lulus = $pendaftar->take($jalur->kuota);
-            $gagal = $pendaftar->skip($jalur->kuota);
-
-            // 4. Ubah status secara massal
-            foreach ($lulus as $reg) {
-                $reg->update(['status' => 'diterima']);
-            }
-            foreach ($gagal as $reg) {
-                $reg->update(['status' => 'tidak_diterima']);
-            }
-        }
-
-        return redirect()->back()->with('success', 'Seleksi otomatis selesai! Status pendaftar telah diperbarui berdasarkan kuota dan nilai rata-rata.');
     }
 
     public function togglePengumuman(JalurPendaftaran $jalur)
