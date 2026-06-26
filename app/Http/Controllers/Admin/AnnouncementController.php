@@ -24,7 +24,7 @@ class AnnouncementController extends Controller
 
         Announcement::create([
             'judul' => $request->judul,
-            'isi' => $request->konten,
+            'isi' => $request->isi,
             'is_published' => $request->has('is_published') ? true : false,
         ]);
 

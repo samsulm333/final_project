@@ -33,7 +33,7 @@ class AdminController extends Controller
         ));
     }
 
-    // 2. Menampilkan Halaman Kendali Seleksi
+    // 2. Halaman Kendali Seleksi
     public function selectionIndex()
     {
         $jalur = JalurPendaftaran::all();
@@ -49,7 +49,7 @@ class AdminController extends Controller
         $preview_data = [];
 
         foreach ($jalurs as $jalur) {
-            // Ambil siswa yang sudah diverifikasi (status: menunggu_seleksi) dan urutkan berdasarkan nilai rata-rata tertinggi
+            // Ambil siswa yang sudah diverifikasi dan urutkan berdasarkan nilai rata-rata tertinggi
             $pendaftar = Registration::where('jalur_id', $jalur->id)
                 ->where('status', 'terverifikasi')
                 ->join('students', 'registrations.student_id', '=', 'students.id')
@@ -119,7 +119,7 @@ class AdminController extends Controller
         }
     }
 
-    // 5. Ekspor Laporan Excel Instan
+    // 5. Ekspor Laporan Excel 
     public function exportExcel()
     {
         $headers = [
