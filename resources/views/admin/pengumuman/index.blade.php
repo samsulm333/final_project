@@ -28,7 +28,7 @@
                     
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">Isi Informasi</label>
-                        <textarea name="konten" rows="5" required 
+                        <textarea name="isi" rows="5" required 
                                   class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" 
                                   placeholder="Tuliskan detail informasi di sini..."></textarea>
                     </div>
