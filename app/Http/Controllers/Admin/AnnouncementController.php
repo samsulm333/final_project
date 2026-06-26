@@ -18,13 +18,13 @@ class AnnouncementController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
-            'konten' => 'required|string',
+            'isi' => 'required|string',
             'is_published' => 'boolean'
         ]);
 
         Announcement::create([
             'judul' => $request->judul,
-            'konten' => $request->konten,
+            'isi' => $request->konten,
             'is_published' => $request->has('is_published') ? true : false,
         ]);
 
